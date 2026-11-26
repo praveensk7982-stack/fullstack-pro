@@ -9,7 +9,7 @@ export default function Navbar() {
           <div className="h-9 w-9 rounded-xl bg-crimson/15 border border-crimson/40 flex items-center justify-center group-hover:bg-crimson transition-colors duration-200">
             <BookOpen className="h-5 w-5 text-crimson group-hover:text-white transition-colors duration-200" />
           </div>
-          <span className="text-xl font-bold tracking-tight text-white">Library</span>
+          <span className="text-xl font-bold tracking-tight text-white">Library-X</span>
         </Link>
       </div>
     </header>

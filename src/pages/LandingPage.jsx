@@ -1,60 +1,22 @@
-import {
-  ArrowLeftRight,
-  ArrowRight,
-  BookOpen,
-  Boxes,
-  Users,
-} from 'lucide-react';
+import { ArrowRight, BookOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-
-const features = [
-  {
-    title: 'Manage Books',
-    description: 'Add, view and organize books',
-    icon: BookOpen,
-    to: '/books',
-  },
-  {
-    title: 'Manage Members',
-    description: 'Register and handle members',
-    icon: Users,
-    to: '/members',
-  },
-  {
-    title: 'Issue & Return',
-    description: 'Borrow and return books',
-    icon: ArrowLeftRight,
-    to: '/issue-return',
-  },
-  {
-    title: 'Track Inventory',
-    description: 'Monitor stock and history',
-    icon: Boxes,
-    to: '/inventory',
-  },
-];
 
 export default function LandingPage() {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-white via-rose-50/20 to-gray-50">
       <Navbar />
 
-      <main className="flex-1">
+      <main className="flex-1 flex items-center">
         {/* Hero Section */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-12 lg:pt-14 lg:pb-16">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
+        <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12 lg:py-16">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             <div className="lg:col-span-6 space-y-6">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-crimson-light text-crimson text-xs sm:text-sm font-semibold shadow-sm">
-                <BookOpen className="h-4 w-4" />
-                <span>Library Management System</span>
-              </div>
-
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <h1 className="text-4xl sm:text-5xl lg:text-[3.4rem] font-extrabold tracking-tight text-gray-950 leading-[1.12]">
                   Welcome to{' '}
                   <span className="relative inline-block text-crimson">
-                    Library
+                    Library-X
                     <svg
                       viewBox="0 0 220 22"
                       fill="none"
@@ -88,7 +50,7 @@ export default function LandingPage() {
                   className="inline-flex items-center gap-3 px-7 py-3.5 rounded-2xl bg-crimson hover:bg-crimson-dark text-white font-semibold text-base shadow-lg shadow-crimson/25 hover:shadow-xl hover:shadow-crimson/30 hover:-translate-y-0.5 transition-all duration-200"
                 >
                   <BookOpen className="h-5 w-5" />
-                  <span>Go to Dashboard</span>
+                  <span>Get Started</span>
                   <ArrowRight className="h-5 w-5" />
                 </Link>
               </div>
@@ -120,32 +82,6 @@ export default function LandingPage() {
                 </svg>
               </div>
             </div>
-          </div>
-        </section>
-
-        {/* Four Feature Cards */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((feature) => {
-              const Icon = feature.icon;
-              return (
-                <Link
-                  key={feature.title}
-                  to={feature.to}
-                  className="group bg-white rounded-2xl p-6 shadow-card hover:shadow-card-hover border border-gray-100 hover:border-crimson/20 transition-all duration-300 hover:-translate-y-1 flex flex-col items-start"
-                >
-                  <div className="h-14 w-14 rounded-full bg-crimson-light flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
-                    <Icon className="h-6 w-6 text-crimson" />
-                  </div>
-                  <h2 className="text-lg font-bold text-gray-900 group-hover:text-crimson transition-colors">
-                    {feature.title}
-                  </h2>
-                  <p className="text-sm text-gray-500 mt-1.5 leading-relaxed">
-                    {feature.description}
-                  </p>
-                </Link>
-              );
-            })}
           </div>
         </section>
       </main>

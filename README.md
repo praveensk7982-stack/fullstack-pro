@@ -1,145 +1,95 @@
 # Library Management System
 
-A full-stack Library Management System built with React (Vite), Tailwind CSS, Node.js, Express, TypeScript (strict mode), Prisma ORM, and JWT authentication.
-
-## Features
-
-- **Landing Page (`/`)**: Crimson red (`#C8102E`), white, and dark navy (`#111827`) theme with hero banner, feature cards, and wave footer.
-- **Authentication (`/login`)**: JWT access token authentication with `bcrypt` password hashing and protected routes.
-- **Dashboard (`/dashboard`)**: Live stats cards (total books, total members, books issued, overdue books), Recharts monthly issues vs returns bar chart, and recent transactions table.
-- **Books Management (`/books`)**: Search, category filter, pagination, and add/edit/delete book modals.
-- **Members Management (`/members`)**: Search and add/edit/delete member modals with status tracking.
-- **Issue & Return (`/issue-return`)**: Issue available books to active members with due dates and process returns with automatic **₹5/day** overdue fine calculation.
-- **Inventory & History (`/inventory`)**: Stock overview, low-stock alerts (`≤ 2` available copies), and full filterable transaction history.
+A modern, responsive university Library Management System built with **React (Vite)**, **Tailwind CSS**, and **Supabase (PostgreSQL + Postgres RPC functions)**. There is no separate Express server, no Prisma layer, and no login/authentication flow—the frontend connects directly to Supabase for data persistence and server-side business rule enforcement.
 
 ---
 
-## Folder Structure
+## 1. Tech Stack
 
-```text
-├── backend/
-│   ├── prisma/
-│   │   ├── schema.prisma
-│   │   └── seed.ts
-│   ├── src/
-│   │   ├── config/
-│   │   ├── controllers/
-│   │   ├── middleware/
-│   │   ├── routes/
-│   │   ├── services/
-│   │   ├── types/
-│   │   ├── utils/
-│   │   ├── validators/
-│   │   ├── app.ts
-│   │   └── index.ts
-│   ├── .env.example
-│   ├── package.json
-│   └── tsconfig.json
-└── frontend/
-    ├── public/images/
-    ├── src/
-    │   ├── api/
-    │   ├── components/
-    │   ├── context/
-    │   ├── pages/
-    │   ├── App.jsx
-    │   ├── index.css
-    │   └── main.jsx
-    ├── .env.example
-    ├── package.json
-    └── tailwind.config.js
-```
+- **Frontend**: React JS (Vite), React Router, Tailwind CSS, `lucide-react` icons, `react-hot-toast`
+- **Backend / Database**: Supabase (PostgreSQL tables, constraints, and PL/pgSQL RPC functions via `@supabase/supabase-js`)
 
 ---
 
-## Setup & Running Locally
+## 2. Prerequisites
 
-### 1. Prerequisites
-- Node.js v18+ (tested with Node v24)
-- npm v9+
-
-### 2. Backend Setup
-
-```bash
-cd backend
-npm install
-```
-
-Copy `.env.example` to `.env` (already pre-configured for SQLite local dev):
-
-```env
-PORT=5000
-NODE_ENV=development
-DATABASE_URL="file:./dev.db"
-JWT_SECRET="library-management-super-secret-jwt-key-change-in-production"
-JWT_EXPIRES_IN="7d"
-CORS_ORIGIN="http://localhost:5173"
-FINE_PER_DAY=5
-```
-
-> **Switching to PostgreSQL**: Update `provider = "postgresql"` in `backend/prisma/schema.prisma` and set `DATABASE_URL` in `backend/.env` to your PostgreSQL connection string.
-
-Run Prisma migrations, generate the client, and seed the database:
-
-```bash
-npx prisma generate
-npx prisma migrate dev --name init
-npm run prisma:seed
-```
-
-Start the backend development server:
-
-```bash
-npm run dev
-```
-
-The API runs on `http://localhost:5000`.
-
-### 3. Frontend Setup
-
-Open a new terminal:
-
-```bash
-cd frontend
-npm install
-```
-
-Copy `.env.example` to `.env`:
-
-```env
-VITE_API_URL=http://localhost:5000/api
-```
-
-Start the Vite dev server:
-
-```bash
-npm run dev
-```
-
-Open `http://localhost:5173` in your browser.
+- **Node.js 18+** and **npm**
+- A free **[Supabase](https://supabase.com)** account
 
 ---
 
-## Default Seeded Accounts & Data
+## 3. Setup Steps
 
-- **Admin Login**: `admin@library.com` / `Admin@123`
-- **Librarian Login**: `librarian@library.com` / `Librarian@123`
-- **Sample Data**: 15 books, 8 members, and 14 historical/active/overdue transactions.
+1. **Create a Supabase Project**
+   - Sign in to Supabase and create a new project.
+2. **Initialize the Database Schema**
+   - Open the **SQL Editor** in your Supabase dashboard.
+   - Paste and run the full `schema.sql` from the repository root (it creates the tables, business-rule Postgres functions, `anon` permissions, and sample seed data).
+   - **Important**: Run `schema.sql` on a fresh Supabase project only.
+3. **Get Your API Credentials**
+   - Go to **Project Settings > API Keys** in Supabase and copy your **Project URL** and **publishable (or `anon`) key**.
+4. **Configure Frontend Environment Variables**
+   ```bash
+   cd frontend
+   cp .env.example .env
+   ```
+   Fill in `frontend/.env`:
+   ```env
+   VITE_SUPABASE_URL=your_supabase_project_url
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_or_publishable_key
+   ```
+5. **Install Dependencies & Run**
+   ```bash
+   npm install
+   npm run dev
+   ```
+   Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ---
 
-## API Endpoints
+## 4. Features
 
-| Method | Endpoint | Access | Description |
-| --- | --- | --- | --- |
-| POST | `/api/auth/login` | Public | Authenticate user and return JWT |
-| POST | `/api/auth/register` | Admin | Register a new Admin or Librarian |
-| GET | `/api/auth/me` | Protected | Fetch current authenticated user |
-| GET | `/api/dashboard/stats` | Protected | Dashboard metrics, chart & recent loans |
-| GET/POST | `/api/books` | Protected | List (search/filter/page) & create books |
-| GET/PUT/DELETE | `/api/books/:id` | Protected | Fetch, update, or delete a book |
-| GET/POST | `/api/members` | Protected | List (search/filter) & register members |
-| GET/PUT/DELETE | `/api/members/:id` | Protected | Fetch, update, or delete a member |
-| GET | `/api/transactions` | Protected | List transaction history with filters |
-| POST | `/api/transactions/issue` | Protected | Issue a book to an active member |
-| POST | `/api/transactions/return` | Protected | Return a book & compute ₹5/day fine |
+- **Landing Page (`/`)**: Crimson red (`#C8102E`), white, and dark navy (`#111827`) theme with hero banner, feature overview cards, and wave footer.
+- **Dashboard (`/dashboard`)**: 4 summary cards (**Total Books**, **Total Students**, **Currently Issued**, **Overdue**), quick-navigation shortcuts, and the **5 most recent issues** table showing student name and register number.
+- **Books (`/books`)**: Catalog table (`Title`, `Author`, `ISBN`, `Category`, `Total`, `Available`) with search, category filter, sorting (`title`, `author`, `available`, `newest` in `asc`/`desc`), pagination, Add/Edit modal, Delete confirmation, per-row **Add Stock** / **Reduce Stock** modal (quantity + note), and per-book **History** modal.
+- **Students (`/members`)**: University student directory (`Student`, `Register No`, `Department`, `Phone`, `Status`, `Actions`) with search by name/register number/department/email/phone, department filter dropdown, pagination, Add/Edit modal (12-digit numeric register number validation and 6 engineering departments), Delete confirmation, and per-student **Borrowed Books** modal (`N/3`).
+- **Issue & Return (`/issue-return`)**: Searchable student selector (`Name - RegisterNumber (Department)`), book selector, automatic read-only **Today + 14 Days** due date preview, active issues table with **Overdue** badges, and one-click **Return** action.
+- **Inventory (`/inventory`)**: Stock overview cards, low-stock alerts (`≤ 2` available), and full paginated **Inventory History** table (`Date`, `Book`, `Type`, `Quantity`, `Available Stock` previous → new, `Note`) filterable by book and event type (`ADD`, `REDUCE`, `ISSUE`, `RETURN`, `INITIAL`).
+
+---
+
+## 5. Business Rules & Enforcement
+
+All core business rules live in PostgreSQL constraints and Postgres RPC functions (`supabase.rpc(...)`):
+
+| Business Rule | Where Enforced |
+| --- | --- |
+| **Unique ISBN** | `UNIQUE` constraint on `books.isbn` + `create_book` RPC (and `23505` handling on book edit) |
+| **Unique Student Register Number & Email** | `UNIQUE` constraints on `members.register_number` and `members.email` (plus 12-digit validation on the student form) |
+| **Non-negative stock & `available_stock <= total_stock`** | `CHECK` constraints on `books` + `create_book`, `add_stock`, and `reduce_stock` RPCs |
+| **Max 3 borrowed books per student** | `issue_book` RPC |
+| **14-day due date on issue** | `issue_book` RPC (`issue_date + 14 days`) |
+| **Duplicate active issue prevention** | `issue_book` RPC prevents issuing the same book twice to the same student while unreturned |
+| **Atomic stock updates on issue/return** | `issue_book` and `return_book` RPCs |
+| **Audit log for every stock change** | `create_book`, `add_stock`, `reduce_stock`, `issue_book`, and `return_book` RPCs insert into `inventory_history` |
+| **Safe deletions** | `delete_book` and `delete_member` RPCs reject deletion when unreturned issues exist |
+
+---
+
+## 6. How to Test the Business Rules
+
+1. **Duplicate ISBN**: On `/books`, click **Add New Book** and enter an existing ISBN (e.g., `9780132350884`) → fails with *"ISBN already exists"*.
+2. **Over-reduce Stock**: On `/books`, click **Reduce** on a book and enter a quantity greater than its **Available** count → fails with an insufficient-stock error.
+3. **Student Register Number Validation & Uniqueness**: On `/members`, try adding a student with an 11-digit register number → blocked by inline validation; try an existing 12-digit register number → fails with *"Register number already exists"*.
+4. **Max 3 Books per Student**: On `/issue-return`, try issuing a 4th book to a student who already has `3/3` borrowed (e.g., Arun Kumar) → fails with the 3-book limit error.
+5. **Out-of-Stock Issue**: On `/issue-return`, select a book marked `(Out of Stock)` and click **Issue** → fails with *"Book is out of stock"*.
+6. **Issue, Return & History**: Issue an available book to a student with fewer than 3 books, confirm `available_stock` decreases by 1 and an `ISSUE` entry appears in `/inventory`, then click **Return** and confirm stock restores and a `RETURN` entry is logged.
+7. **Delete Protection**: Attempt to delete a book or student that currently has an active unreturned issue → fails with a clear error toast.
+
+---
+
+## 7. Known Limitations
+
+- **No Authentication**: There is no login, role-based access control, or user session management; anyone with access to the app can manage books, students, and issues.
+- **RLS Disabled / Open `anon` Access**: Row Level Security is disabled (or granted openly to `anon`) for demo purposes—enable authentication and strict RLS policies before deploying to production.
+- **Repository Notes**: `schema.sql` is expected to be run manually in the Supabase SQL Editor and is not committed at the repository root in this workspace. Also, if an empty `backend/` directory remains on Windows due to a locked OS handle, it contains no files and is unused.
